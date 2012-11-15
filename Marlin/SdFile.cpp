@@ -55,16 +55,13 @@ int16_t SdFile::write(const void* buf, uint16_t nbyte) {
  * Use writeError to check for errors.
  */
 #if ARDUINO >= 100
-size_t SdFile::write(uint8_t b)
-{
-    return SdBaseFile::write(&b, 1);
-}
+    size_t SdFile::write(uint8_t b)
 #else
-void SdFile::write(uint8_t b)
-{
-    SdBaseFile::write(&b, 1);
-}
+  void SdFile::write(uint8_t b)
 #endif
+{
+  SdBaseFile::write(&b, 1);
+}
 //------------------------------------------------------------------------------
 /** Write a string to a file. Used by the Arduino Print class.
  * \param[in] str Pointer to the string.

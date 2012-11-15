@@ -1,3 +1,10 @@
+This version supports Printrboard and Panucatt VersaPanel (with Prinrboard & RAMPS )
+last upstream merge 10/12 RC3-81-gbc27d80
+
+To enable VersaPanel support:
+1) uncomment #define VERSAPANEL in Configuration.h
+2) download and install LiquidTWI2 http://blog.lincomatic.com/?tag=liquidtwi2
+
 WARNING: 
 --------
 THIS IS RELEASE CANDIDATE 2 FOR MARLIN 1.0.0
@@ -45,7 +52,6 @@ Features:
 *   Heater power reporting. Useful for PID monitoring.
 *   PID tuning
 *   CoreXY kinematics (www.corexy.com/theory.html)
-*   Configurable serial port to support connection of wireless adaptors.
 
 The default baudrate is 250000. This baudrate has less jitter and hence errors than the usual 115200 baud, but is less supported by drivers and host-environments.
 
@@ -166,7 +172,7 @@ Temperature variables:
 Advance:
 
 *   M200 - Set filament diameter for advance
-*   M205 - advanced settings:  minimum travel speed S=while printing T=travel only,  B=minimum segment time X= maximum xy jerk, Z=maximum Z jerk
+*   M205 -  advanced settings:  minimum travel speed S=while printing T=travel only,  B=minimum segment time X= maximum xy jerk, Z=maximum Z jerk
 
 EEPROM:
 
@@ -177,18 +183,17 @@ EEPROM:
 *   M503 - print the current settings (from memory not from eeprom)
 
 MISC:
-
 *   M240 - Trigger a camera to take a photograph
 *   M999 - Restart after being stopped by error
 
 Configuring and compilation:
 ============================
 
-Install the arduino software IDE/toolset v23 (Some configurations also work with 1.x.x)
+Install the arduino software IDE/toolset v22
    http://www.arduino.cc/en/Main/Software
 
-For gen6/gen7 and sanguinololu the Sanguino directory in the Marlin dir needs to be copied to the arduino environment.
-  copy ArduinoAddons\Arduino_x.x.x\sanguino <arduino home>\hardware\Sanguino
+For gen6 and sanguinololu the Sanguino directory in the Marlin dir needs to be copied to the arduino environment.
+  copy Marlin\sanguino <arduino home>\hardware\Sanguino
 
 Install Ultimaker's RepG 25 build
     http://software.ultimaker.com

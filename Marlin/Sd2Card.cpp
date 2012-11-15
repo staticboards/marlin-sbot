@@ -35,48 +35,58 @@
  */
 static void spiInit(uint8_t spiRate) {
   // See avr processor documentation
-  SPCR = (1 << SPE) | (1 << MSTR) | (spiRate >> 1);
+  SPCR = (0 << SPE) | (1 << MSTR) | (spiRate >> 1);
   SPSR = spiRate & 1 || spiRate == 6 ? 0 : 1 << SPI2X;
 }
 //------------------------------------------------------------------------------
 /** SPI receive a byte */
 static uint8_t spiRec() {
+  SPCR |= (1 << SPE);
   SPDR = 0XFF;
-  while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
-  return SPDR;
+  while (!(SPSR & (1 << SPIF)));
+  const uint8_t r = SPDR ;
+  SPCR &= ~(1 << SPE);
+  return r;
 }
 //------------------------------------------------------------------------------
 /** SPI read data - only one call so force inline */
 static inline __attribute__((always_inline))
-void spiRead(uint8_t* buf, uint16_t nbyte) {
+  void spiRead(uint8_t* buf, uint16_t nbyte) {
+  SPCR |= (1 << SPE);
   if (nbyte-- == 0) return;
   SPDR = 0XFF;
   for (uint16_t i = 0; i < nbyte; i++) {
-    while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
+    while (!(SPSR & (1 << SPIF)));
     buf[i] = SPDR;
     SPDR = 0XFF;
   }
-  while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
-  buf[nbyte] = SPDR;
+  while (!(SPSR & (1 << SPIF)));
+  const uint8_t r = SPDR ;
+  SPCR &= ~(1 << SPE);
+  buf[nbyte] = r;
 }
 //------------------------------------------------------------------------------
 /** SPI send a byte */
 static void spiSend(uint8_t b) {
+  SPCR |= (1 << SPE);
   SPDR = b;
-  while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
+  while (!(SPSR & (1 << SPIF)));
+  SPCR &= ~(1 << SPE);
 }
 //------------------------------------------------------------------------------
 /** SPI send block - only one call so force inline */
 static inline __attribute__((always_inline))
   void spiSendBlock(uint8_t token, const uint8_t* buf) {
+  SPCR |= (1 << SPE);
   SPDR = token;
   for (uint16_t i = 0; i < 512; i += 2) {
-    while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
+    while (!(SPSR & (1 << SPIF)));
     SPDR = buf[i];
-    while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
+    while (!(SPSR & (1 << SPIF)));
     SPDR = buf[i + 1];
   }
-  while (!(SPSR & (1 << SPIF))) { /* Intentionally left empty */ }
+  while (!(SPSR & (1 << SPIF)));
+  SPCR &= ~(1 << SPE);
 }
 //------------------------------------------------------------------------------
 #else  // SOFTWARE_SPI
@@ -174,7 +184,7 @@ uint8_t Sd2Card::cardCommand(uint8_t cmd, uint32_t arg) {
   if (cmd == CMD12) spiRec();
 
   // wait for response
-  for (uint8_t i = 0; ((status_ = spiRec()) & 0X80) && i != 0XFF; i++) { /* Intentionally left empty */ }
+  for (uint8_t i = 0; ((status_ = spiRec()) & 0X80) && i != 0XFF; i++);
   return status_;
 }
 //------------------------------------------------------------------------------
@@ -369,6 +379,7 @@ bool Sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin) {
  *
  * \param[in] blockNumber Logical block to be read.
  * \param[out] dst Pointer to the location that will receive the data.
+
  * \return The value one, true, is returned for success and
  * the value zero, false, is returned for failure.
  */
@@ -637,5 +648,6 @@ bool Sd2Card::writeStop() {
   chipSelectHigh();
   return false;
 }
+
 
 #endif

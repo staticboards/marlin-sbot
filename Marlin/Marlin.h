@@ -4,6 +4,8 @@
 #ifndef MARLIN_H
 #define MARLIN_H
 
+#define  HardwareSerial_h // trick to disable the standard HWserial
+
 #define  FORCE_INLINE __attribute__((always_inline)) inline
 
 #include <math.h>
@@ -15,25 +17,28 @@
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
-#include <avr/interrupt.h>
+#include  <avr/wdt.h>
+#include  <avr/interrupt.h>
 
 
 #include "fastio.h"
 #include "Configuration.h"
 #include "pins.h"
 
-#ifndef AT90USB
-#define  HardwareSerial_h // trick to disable the standard HWserial
-#endif
-
-#if (ARDUINO >= 100)
-# include "Arduino.h"
+#if ARDUINO >= 100 
+  #if defined(__AVR_ATmega644P__)
+    #include "WProgram.h"
+  #else
+    #include "Arduino.h"
+  #endif
 #else
-# include "WProgram.h"
-  //Arduino < 1.0.0 does not define this, so we need to do it ourselfs
-# define analogInputToDigitalPin(p) ((p) + A0)
+   #include "WProgram.h"
 #endif
 
+#ifdef MCP23017_LCD
+#include <Wire.h>
+#include <LiquidTWI2.h>
+#endif
 #include "MarlinSerial.h"
 
 #ifndef cbi
@@ -45,17 +50,28 @@
 
 #include "WString.h"
 
-#ifdef AT90USB
+#if defined(__AVR_AT90USB1286__)||defined(__AVR_AT90USB1287__)
   #define MYSERIAL Serial
 #else
   #define MYSERIAL MSerial
 #endif
 
+//this is a unfinsihed attemp to removes a lot of warning messages, see:
+// http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=57011
+//typedef char prog_char PROGMEM; 
+// //#define PSTR    (s )        ((const PROGMEM char *)(s))
+// //# define MYPGM(s) (__extension__({static prog_char __c[] = (s); &__c[0];})) 
+// //#define MYPGM(s) ((const prog_char *g PROGMEM=s))
+#define MYPGM(s) PSTR(s)
+//#define MYPGM(s)  (__extension__({static char __c[] __attribute__((__progmem__)) = (s); &__c[0];}))  //This is the normal behaviour
+//#define MYPGM(s)  (__extension__({static prog_char __c[]  = (s); &__c[0];})) //this does not work but hides the warnings
+
+
 #define SERIAL_PROTOCOL(x) MYSERIAL.print(x);
 #define SERIAL_PROTOCOL_F(x,y) MYSERIAL.print(x,y);
-#define SERIAL_PROTOCOLPGM(x) serialprintPGM(PSTR(x));
+#define SERIAL_PROTOCOLPGM(x) serialprintPGM(MYPGM(x));
 #define SERIAL_PROTOCOLLN(x) {MYSERIAL.print(x);MYSERIAL.write('\n');}
-#define SERIAL_PROTOCOLLNPGM(x) {serialprintPGM(PSTR(x));MYSERIAL.write('\n');}
+#define SERIAL_PROTOCOLLNPGM(x) {serialprintPGM(MYPGM(x));MYSERIAL.write('\n');}
 
 
 const char errormagic[] PROGMEM ="Error:";
@@ -80,6 +96,7 @@ void serial_echopair_P(const char *s_P, unsigned long v);
 
 
 //things to write to serial from Programmemory. saves 400 to 2k of RAM.
+#define SerialprintPGM(x) serialprintPGM(MYPGM(x))
 FORCE_INLINE void serialprintPGM(const char *str)
 {
   char ch=pgm_read_byte(str);
@@ -117,8 +134,8 @@ void manage_inactivity();
     #define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
     #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); }
   #else
-    #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
-    #define disable_z() WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON)
+  #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
+  #define disable_z() WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON)
   #endif
 #else
   #define enable_z() ;
@@ -164,7 +181,6 @@ void Stop();
 bool IsStopped();
 
 void enquecommand(const char *cmd); //put an ascii command at the end of the current buffer.
-void enquecommand_P(const char *cmd); //put an ascii command at the end of the current buffer, read from flash
 void prepare_arc_move(char isclockwise);
 void clamp_to_software_endstops(float target[3]);
 
@@ -179,23 +195,11 @@ void setPwmFrequency(uint8_t pin, int val);
 
 extern float homing_feedrate[];
 extern bool axis_relative_modes[];
-extern int feedmultiply;
-extern int extrudemultiply; // Sets extrude multiply factor (in percent)
 extern float current_position[NUM_AXIS] ;
 extern float add_homeing[3];
 extern float min_pos[3];
 extern float max_pos[3];
-extern int fanSpeed;
-
-#ifdef FWRETRACT
-extern bool autoretract_enabled;
-extern bool retracted;
-extern float retract_length, retract_feedrate, retract_zlift;
-extern float retract_recover_length, retract_recover_feedrate;
-#endif
-
-extern unsigned long starttime;
-extern unsigned long stoptime;
+extern unsigned char FanSpeed;
 
 // Handling multiple extruders pins
 extern uint8_t active_extruder;

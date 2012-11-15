@@ -400,7 +400,7 @@ bool SdBaseFile::make83Name(const char* str, uint8_t* name, const char** ptr) {
       // check size and only allow ASCII printable characters
       if (i > n || c < 0X21 || c > 0X7E)goto fail;
       // only upper case allowed in 8.3 names - convert lower to upper
-      name[i++] = (c < 'a' || c > 'z') ?  (c) : (c + ('A' - 'a'));
+      name[i++] = c < 'a' || c > 'z' ?  c : c + ('A' - 'a');
     }
   }
   *ptr = str;
@@ -1112,7 +1112,7 @@ int8_t SdBaseFile::readDir(dir_t* dir, char* longFilename) {
   int16_t n;
   // if not a directory file or miss-positioned return an error
   if (!isDir() || (0X1F & curPosition_)) return -1;
-  
+
   //If we have a longFilename buffer, mark it as invalid. If we find a long filename it will be filled automaticly.
   if (longFilename != NULL)
   {
