@@ -32,36 +32,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //#define BLA_PORT	PORTB
 //#define BLA 		2
 
-#define MOSI_DDR       DDRA
-#define MOSI_PIN       PINA
-#define MOSI_PORT      PORTA
-#define MOSI           4
+#define MOSI_DDR	DDRB
+#define MOSI_PIN	PINB
+#define MOSI_PORT	PORTB
+#define MOSI		2
 
-#define SCLK_DDR       DDRA
-#define SCLK_PIN       PINA
-#define SCLK_PORT      PORTA
-#define SCLK           3
+#define SCLK_DDR	DDRB
+#define SCLK_PIN	PINB
+#define SCLK_PORT	PORTB
+#define SCLK 		1
 
-#define A0_DDR                 DDRA
-#define A0_PIN                 PINA
-#define A0_PORT        PORTA
-#define A0             2
+#define A0_DDR 		DDRE
+#define A0_PIN 		PINE
+#define A0_PORT 	PORTE
+#define A0 		5
 
-#define CS_DDR                 DDRA
-#define CS_PIN                 PINA
-#define CS_PORT                PORTA
-#define CS             0
+#define CS_DDR 		DDRE
+#define CS_PIN 		PINE
+#define CS_PORT		PORTE
+#define CS 		6
 
-#define RST_DDR                DDRA
-#define RST_PIN                PINA
-#define RST_PORT       PORTA
-#define RST            1
+#define RST_DDR		DDRE
+#define RST_PIN		PINE
+#define RST_PORT	PORTE
+#define RST		4
 
 #define GLCDWIDTH	128
 #define GLCDHEIGHT	32
 
 #define GLCDBUFFERSIZE	GLCDWIDTH*GLCDHEIGHT/8
-#define GLCDBRIGHTNESS  45
 
 static uint8_t glcd_brightness ;
 
@@ -144,12 +143,12 @@ uint8_t glcd_buffer[ GLCDBUFFERSIZE ] = {
 };
 
 const uint8_t glcd_font[] PROGMEM = { 
-  0x00, 0x0, 0x0, 0x0, 0x0,       // Ascii 0
-  0x60, 0x90, 0x90, 0x60, 0x00,  //ASC(01) degree
-  0x06, 0x79, 0x81, 0x79, 0x06,  //ASC(02) thermometer
-  0x28, 0x68, 0xF8, 0x60, 0x20,  // up arrow
-  0x34, 0x32, 0x42, 0x4C, 0x2C,  // refres  h
-  0x7C, 0x64, 0x64, 0x24, 0x3C,  // folder
+  0x0, 0x0, 0x0, 0x0, 0x0,       // Ascii 0
+  0x7C, 0xDA, 0xF2, 0xDA, 0x7C,  //ASC(01)
+  0x7C, 0xD6, 0xF2, 0xD6, 0x7C,  //ASC(02)
+  0x38, 0x7C, 0x3E, 0x7C, 0x38, 
+  0x18, 0x3C, 0x7E, 0x3C, 0x18, 
+  0x38, 0xEA, 0xBE, 0xEA, 0x38, 
   0x38, 0x7A, 0xFE, 0x7A, 0x38, 
   0x0, 0x18, 0x3C, 0x18, 0x0, 
   0xFF, 0xE7, 0xC3, 0xE7, 0xFF, 
@@ -705,23 +704,6 @@ void st7565_set_brightness(const uint8_t val)
     st7565_command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
 }
 
-void st7565_clear_screen(void)
-{
-  uint8_t p, c;
-  
-  for(p = 0; p < (GLCDHEIGHT/8) ; p++ )
-    {
-      st7565_command(CMD_SET_PAGE | p) ;
-      
-      for(c = 0; c < GLCDWIDTH+1; c++)
-  {
-    st7565_command(CMD_SET_COLUMN_LOWER | (c & 0xf));
-    st7565_command(CMD_SET_COLUMN_UPPER | ((c >> 4) & 0xf));
-    st7565_data(0x0);
-  }     
-    }
-}
-
 void st7565_init(void)
 {
   MOSI_DDR |= _BV(MOSI);
@@ -775,12 +757,24 @@ void st7565_init(void)
   st7565_command(CMD_SET_DISP_START_LINE|0x0);
   
   // START LCD
-  st7565_clear_screen ();
-
-  // default volume
-  st7565_set_brightness ( GLCDBRIGHTNESS ) ;
-
   st7565_command(CMD_DISPLAY_ON) ;
+}
+
+void st7565_clear_screen(void)
+{
+  uint8_t p, c;
+  
+  for(p = 0; p < (GLCDHEIGHT/8) ; p++ )
+    {
+      st7565_command(CMD_SET_PAGE | p) ;
+      
+      for(c = 0; c < GLCDWIDTH+1; c++)
+	{
+	  st7565_command(CMD_SET_COLUMN_LOWER | (c & 0xf));
+	  st7565_command(CMD_SET_COLUMN_UPPER | ((c >> 4) & 0xf));
+	  st7565_data(0x0);
+	}     
+    }
 }
 
 void glcd_set_brightness(const uint8_t val)
@@ -816,13 +810,12 @@ void glcd_sendbuffer (void )
       st7565_command(CMD_SET_COLUMN_LOWER | (0x0 & 0xf));
       st7565_command(CMD_SET_COLUMN_UPPER | ((0x0 >> 4) & 0xf));
       st7565_command(CMD_RMW);
-
+      //      st7565_data(0xff);
+    
       for(c = 0; c < GLCDWIDTH; c++)
-      {
-        //st7565_data(0xff);
-        st7565_data( glcd_buffer[( GLCDWIDTH*p)+c]);
-      }
-
+	{
+	  st7565_data( glcd_buffer[( GLCDWIDTH*p)+c]);
+	}
       st7565_command(CMD_RMW_CLEAR);
 
     }

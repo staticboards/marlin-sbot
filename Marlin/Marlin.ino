@@ -42,7 +42,8 @@
 #include "EEPROMwrite.h"
 #include "language.h"
 #include "pins_arduino.h"
-#include "tca62724fmg.h"
+
+
 #define VERSION_STRING  "1.0.0"
 
 // look here for descriptions of gcodes: http://linuxcnc.org/handbook/gcode/g-code.html
@@ -290,11 +291,6 @@ void suicide()
 
 void setup()
 { 
-
-#ifdef TCA62724FMG
-  tca62724fmg_init();
-#endif
-
   setup_killpin(); 
   setup_powerhold();
   MYSERIAL.begin(BAUDRATE);
@@ -338,6 +334,7 @@ void setup()
     axis_steps_per_sqr_second[i] = max_acceleration_units_per_sq_second[i] * axis_steps_per_unit[i];
   }
 
+
   tp_init();    // Initialize temperature loop 
   plan_init();  // Initialize planner;
   st_init();    // Initialize stepper;
@@ -345,27 +342,6 @@ void setup()
   setup_photpin();
   
   LCD_INIT;
-  
-#if (MOTHERBOARD == 100)
-
-//staticbot init
-
-DDRE  |= 0x20; //blink Verification
-PORTE |= 0x20; //on
-delay (200);
-PORTE &= 0xDF; //off
-delay (200);
-PORTE |= 0x20; //on
-//delay (100);
-//PORTE &= 0xDF; //off
-
-DDRF  |= 0x80; // Fan2 OFF
-PORTF &= 0x7F;
-
-
-
-#endif //endif staticbot
- 
 }
 
 
@@ -1134,11 +1110,10 @@ void process_commands()
       case 106: //M106 Fan On
         if (code_seen('S')){
            FanSpeed=constrain(code_value(),0,255);
-           
         }
         else {
           FanSpeed=255;			
-        }     
+        }
         break;
       case 107: //M107 Fan Off
         FanSpeed = 0;
@@ -1266,8 +1241,7 @@ void process_commands()
       #if (X_MAX_PIN > -1)
         SERIAL_PROTOCOLPGM(MSG_X_MAX);
         SERIAL_PROTOCOLLN(((READ(X_MAX_PIN)^X_ENDSTOPS_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
-      #else
-      #endif        
+      #endif
       #if (Y_MIN_PIN > -1)
         SERIAL_PROTOCOLPGM(MSG_Y_MIN);
         SERIAL_PROTOCOLLN(((READ(Y_MIN_PIN)^Y_ENDSTOPS_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
