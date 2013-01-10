@@ -42,7 +42,7 @@
 #include "EEPROMwrite.h"
 #include "language.h"
 #include "pins_arduino.h"
-
+#include "tca62724fmg.h"
 
 #define VERSION_STRING  "1.0.0"
 
@@ -291,6 +291,12 @@ void suicide()
 
 void setup()
 { 
+
+#ifdef TCA62724FMG
+  tca62724fmg_init();
+#endif
+
+  
   setup_killpin(); 
   setup_powerhold();
   MYSERIAL.begin(BAUDRATE);
@@ -333,7 +339,6 @@ void setup()
   {
     axis_steps_per_sqr_second[i] = max_acceleration_units_per_sq_second[i] * axis_steps_per_unit[i];
   }
-
 
   tp_init();    // Initialize temperature loop 
   plan_init();  // Initialize planner;
