@@ -260,12 +260,12 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 
 // default settings 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80 , 80 , 4000 , 100  }                    // default steps per unit for staticbot 
-#define DEFAULT_MAX_FEEDRATE          {400, 400, 100, 1}    // (mm/sec)    
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80 , 80 , 4000 , 96  }                    // default steps per unit for staticbot 
+#define DEFAULT_MAX_FEEDRATE          {300, 300, 100, 35}    // (mm/sec)    
 #define DEFAULT_MAX_ACCELERATION      {1500,1500,100,3000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
-#define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
+#define DEFAULT_RETRACT_ACCELERATION  2000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
 // 
 #define DEFAULT_XYJERK                15.0    // (mm/sec)
