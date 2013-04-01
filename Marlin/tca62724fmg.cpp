@@ -604,7 +604,7 @@ uint8_t tca62724fmg_showpercent ( const double & percent )
 }
 
 void tca62724fmg_init (void )
-{
+{	
 	i2c_init () ;
 
 	_delay_ms (50);	
@@ -616,6 +616,7 @@ void tca62724fmg_init (void )
 	_delay_ms (1000);
 	
 	tca62724fmg_setcolor (0,0,0) ;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

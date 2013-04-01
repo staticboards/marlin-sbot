@@ -1055,7 +1055,7 @@
 
 /****************************************************************************************
 * StaticBot Staticboards Printer (AT90USB)
-* Requires the Teensyduino software with Teensy2.0++ selected in arduino IDE!
+* 
 ****************************************************************************************/
 #if MOTHERBOARD == 100
 #define MOTHERBOARD 100
@@ -1066,34 +1066,34 @@
 #define X_DIR_PIN           14  
 #define X_ENABLE_PIN       4 
 #define X_MIN_PIN          34 
-#define X_MAX_PIN          19    
+#define X_MAX_PIN          -1   // 19  
 
 #define Y_STEP_PIN          11  
 #define Y_DIR_PIN           15 
 #define Y_ENABLE_PIN       5
 #define Y_MIN_PIN          33 
-#define Y_MAX_PIN          19    
+#define Y_MAX_PIN          -1 // 19    
 
 #define Z_STEP_PIN          12
 #define Z_DIR_PIN           17 
 #define Z_ENABLE_PIN       6 
-#define Z_MIN_PIN          41 
-#define Z_MAX_PIN          19    
+#define Z_MIN_PIN          41
+#define Z_MAX_PIN          -1    
 
 #define E0_STEP_PIN         13  
 #define E0_DIR_PIN          35 
 #define E0_ENABLE_PIN       7 
 
 #define HEATER_0_PIN       36  // Extruder
-#define HEATER_1_PIN       -1
+#define HEATER_1_PIN       -1  
 #define HEATER_2_PIN       -1
-#define HEATER_BED_PIN     16 // Bed
-#define FAN_PIN            27  // Fan   
+#define HEATER_BED_PIN     27 // Bed
+#define FAN_PIN            16 
 
-#define TEMP_0_PIN          1  // Extruder
-#define TEMP_1_PIN         -1
+#define TEMP_0_PIN          2  // 1 Extruder
+#define TEMP_1_PIN         -1 //  2 //auxiliar or extruder 2
 #define TEMP_2_PIN         -1
-#define TEMP_BED_PIN       -1  // Bed 
+#define TEMP_BED_PIN    -1 // 0 // Bed 
 
 #define SDPOWER            -1
 #define SDSS                20
@@ -1126,11 +1126,10 @@
     #define encrot3 1
     
     #define BEEPER  8    
-
     //output aux1 (debug) on pin 37
     //output fan2 on pin 45  
     //output relay on pin 9
-    
+    // 19 max pin
 #endif
 
 
