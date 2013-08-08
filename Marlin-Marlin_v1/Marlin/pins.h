@@ -1090,10 +1090,10 @@
 #define HEATER_BED_PIN     27 // Bed
 #define FAN_PIN            16 
 
-#define TEMP_0_PIN          1  // Extruder
-#define TEMP_1_PIN         2  //auxiliar or extruder 2
+#define TEMP_0_PIN          2  // 1 Extruder
+#define TEMP_1_PIN         -1 //  2 //auxiliar or extruder 2
 #define TEMP_2_PIN         -1
-#define TEMP_BED_PIN       0  // Bed 
+#define TEMP_BED_PIN    -1 // 0 // Bed 
 
 #define SDPOWER            -1
 #define SDSS                20
