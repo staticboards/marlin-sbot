@@ -8,7 +8,7 @@
 //User specified version info of THIS file to display in [Pronterface, etc] terminal window during startup.
 //Implementation of an idea by Prof Braino to inform user that any changes made
 //to THIS file by the user have been successfully uploaded into firmware.
-#define STRING_VERSION_CONFIG_H "2013-02-11" //Personal revision number for changes to THIS file.
+#define STRING_VERSION_CONFIG_H "2013-07-28" //Personal revision number for changes to THIS file.
 #define STRING_CONFIG_H_AUTHOR "http://staticboards.com" //Who made the changes.
 
 // This determines the communication speed of the printer
@@ -66,9 +66,9 @@
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan) (1k pullup)
 
 #define TEMP_SENSOR_0 1
-#define TEMP_SENSOR_1 1
+#define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 1
+#define TEMP_SENSOR_BED 0
 
 // Actual temperature must be close to target for this long before M109 returns success
 #define TEMP_RESIDENCY_TIME 10	// (seconds)
@@ -176,7 +176,7 @@
 //===========================================================================
 
 // Uncomment the following line to enable CoreXY kinematics
-// #define COREXY
+//#define COREXY
 
 // corse Endstop Settings
 //#define ENDSTOPPULLUPS // Comment this out (using // at the start of the line) to disable the endstop pullup resistors
@@ -184,11 +184,11 @@
 #ifndef ENDSTOPPULLUPS
   // fine Enstop settings: Individual Pullups. will be ignord if ENDSTOPPULLUPS is defined
   #define ENDSTOPPULLUP_XMAX
-  //#define ENDSTOPPULLUP_YMAX
-  //#define ENDSTOPPULLUP_ZMAX
-  //#define ENDSTOPPULLUP_XMIN
-  #define ENDSTOPPULLUP_YMIN
-  #define ENDSTOPPULLUP_ZMIN
+  #define ENDSTOPPULLUP_YMAX
+  #define ENDSTOPPULLUP_ZMAX
+//  #define ENDSTOPPULLUP_XMIN
+//  #define ENDSTOPPULLUP_YMIN
+//  #define ENDSTOPPULLUP_ZMIN
 #endif
 
 #ifdef ENDSTOPPULLUPS
@@ -218,9 +218,9 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 #define DISABLE_Z false
 #define DISABLE_E false // For all extruders
 
-#define INVERT_X_DIR false    // for Mendel set to false, for Orca set to true
+#define INVERT_X_DIR true    // for Mendel set to false, for Orca set to true
 #define INVERT_Y_DIR true  // for Mendel set to true, for Orca set to false
-#define INVERT_Z_DIR true     // for Mendel set to false, for Orca set to true
+#define INVERT_Z_DIR false     // for Mendel set to false, for Orca set to true
 #define INVERT_E0_DIR true  // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E1_DIR false    // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E2_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
@@ -236,7 +236,7 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 // Travel limits after homing
 #define X_MAX_POS 220 //205
 #define X_MIN_POS 0
-#define Y_MAX_POS 167 //205
+#define Y_MAX_POS 157 //205
 #define Y_MIN_POS 0
 #define Z_MAX_POS 140
 #define Z_MIN_POS 0
@@ -262,13 +262,13 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80 , 80 , 4000 , 1100  }                    // default steps per unit for staticbot 
 #define DEFAULT_MAX_FEEDRATE          {300, 300, 100, 45}    // (mm/sec)    
-#define DEFAULT_MAX_ACCELERATION      {1500,1500,100,300}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION      {1000,1000,100,300}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
-#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
+#define DEFAULT_ACCELERATION          700    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
 #define DEFAULT_RETRACT_ACCELERATION  300   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
 // 
-#define DEFAULT_XYJERK                15.0    // (mm/sec)
+#define DEFAULT_XYJERK                12.0    // (mm/sec)
 #define DEFAULT_ZJERK                 0.4     // (mm/sec)
 #define DEFAULT_EJERK                 2.0    // (mm/sec)
 
